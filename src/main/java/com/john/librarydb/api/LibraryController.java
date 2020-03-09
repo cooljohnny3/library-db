@@ -1,6 +1,5 @@
 package com.john.librarydb.api;
 
-import com.john.librarydb.model.Book;
 import com.john.librarydb.model.Library;
 import com.john.librarydb.service.LibraryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,32 +22,27 @@ public class LibraryController {
     }
 
     @PostMapping("/add")
-    public void addPerson(@Valid @NotNull @RequestBody Library library) {
+    public void addLibrary(@Valid @NotNull @RequestBody Library library) {
         libraryService.addLibrary(library);
     }
 
     @GetMapping
-    public List<Library> getLibrary() {
+    public List<Library> getLibraries() {
         return libraryService.getLibraries();
     }
 
     @GetMapping("/{id}")
-    public Library getPersonById(@PathVariable("id") UUID id) {
+    public Library getLibraryById(@PathVariable("id") UUID id) {
         return libraryService.selectLibraryById(id).orElse(null);
     }
 
     @PutMapping("/{id}")
-    public void updatePerson(@PathVariable("id") UUID id, @Valid @NotNull @RequestBody Library library) {
+    public void updateLibrary(@PathVariable("id") UUID id, @Valid @NotNull @RequestBody Library library) {
         libraryService.updateLibraryById(id, library);
     }
 
     @DeleteMapping("/{id}")
-    public void deletePerson(@PathVariable("id")UUID id) {
+    public void deleteLibrary(@PathVariable("id")UUID id) {
         libraryService.deleteLibraryById(id);
-    }
-
-    @PostMapping("/add/{id}")
-    public void addBookToLibrary(UUID libraryId, UUID bookId) {
-        libraryService.addBookToLibrary(libraryId, bookId);
     }
 }

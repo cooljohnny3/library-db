@@ -23,7 +23,14 @@ public class LibraryService {
     }
 
     public int deleteLibraryById(UUID id) {
+        if(!checkBooks(id)) {
+            return 1;
+        }
         return libraryDAO.deleteLibraryById(id);
+    }
+
+    private boolean checkBooks(UUID id) {
+        return getBooksAtLibrary(selectLibraryById(id).get()).stream().count() > 0;
     }
 
     public int updateLibraryById(UUID id, Library library) {
@@ -38,15 +45,7 @@ public class LibraryService {
         return libraryDAO.selectLibraryById(id);
     }
 
-    public int addBookToLibrary(Library library, Book book) {
-        return libraryDAO.addBookToLibrary(library, book);
-    }
-
     public List<Book> getBooksAtLibrary(Library library) {
         return libraryDAO.getBooksAtLibrary(library);
-    }
-
-    public int checkOutBook(Book book) {
-        return 0;
     }
 }

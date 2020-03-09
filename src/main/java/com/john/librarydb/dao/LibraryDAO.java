@@ -17,6 +17,8 @@ public interface LibraryDAO {
     int updateLibraryById(UUID id, Library library);
     List<Library> getLibraries();
     Optional<Library> selectLibraryById(UUID id);
-    int addBookToLibrary(Library library, Book book);
+    int addBookToLibrary(Book book);
+    int removeBookFromLibrary(Book book);
     List<Book> getBooksAtLibrary(Library library);
+    int transfer(Library library1, Library library2, Book book);
 }

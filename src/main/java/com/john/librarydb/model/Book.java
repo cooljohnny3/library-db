@@ -7,12 +7,14 @@ public class Book {
     private String title;
     private Author author;
     private Genre genre;
+    private UUID libraryId;
 
-    public Book(UUID id, String title, Author author, Genre genre) {
+    public Book(UUID id, String title, Author author, Genre genre, UUID libraryId) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.genre = genre;
+        this.libraryId = libraryId;
     }
 
     public UUID getId() {
@@ -45,6 +47,14 @@ public class Book {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public UUID getLibraryId() {
+        return libraryId;
+    }
+
+    public void setLibraryId(UUID libraryId) {
+        this.libraryId = libraryId;
     }
 
     @Override

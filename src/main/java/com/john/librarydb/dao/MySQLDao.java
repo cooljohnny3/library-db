@@ -199,7 +199,8 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
                                 new Genre(
                                         UUID.fromString(rs.getString("genreID")),
                                         rs.getString("genre")
-                                )
+                                ),
+                                null
                         )
                 );
             }
@@ -233,7 +234,8 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
                         new Genre(
                                 UUID.fromString(rs.getString("genreID")),
                                 rs.getString("genre")
-                        ))
+                        ),
+                        null)
                 );
             }
         } catch(SQLException e) {
@@ -485,11 +487,11 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
     }
 
     @Override
-    public int addBookToLibrary(Library library, Book book) {
+    public int addBookToLibrary(Book book) {
         String query = "INSERT INTO librarybooks (libraryID,bookID) VALUES (?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, library.getId().toString());
+            preparedStatement.setString(1, book.getLibraryId().toString());
             preparedStatement.setString(2, book.getId().toString());
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
@@ -501,10 +503,25 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
     }
 
     @Override
+    public int removeBookFromLibrary(Book book) {
+        String query = "DELETE FROM librarybooks WHERE bookID=?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, book.getId().toString());
+            preparedStatement.executeUpdate();
+        } catch(SQLException e) {
+            System.out.println("Error removing library book");
+            e.printStackTrace();
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
     public List<Book> getBooksAtLibrary(Library library) {
         ArrayList<Book> bookList = new ArrayList<>();
         String query =
-                "SELECT books.id, books.title, books.authorID, authors.firstname 'authorFirstName', authors.lastname 'authorLastName', books.genreID, genres.name 'genre' \n" +
+                "SELECT books.id, books.title, books.authorID, authors.firstname 'authorFirstName', authors.lastname 'authorLastName', books.genreID, genres.name 'genre', librarybooks.libraryID \n" +
                         "FROM books\n" +
                         "INNER JOIN authors ON books.authorID=authors.id \n" +
                         "INNER JOIN genres ON books.genreID=genres.id \n" +
@@ -524,7 +541,8 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
                                 new Genre(
                                         UUID.fromString(rs.getString("genreID")),
                                         rs.getString("genre")
-                                )
+                                ),
+                                UUID.fromString(rs.getString("libraryID"))
                         )
                 );
             }
@@ -533,5 +551,10 @@ public class MySQLDao implements PersonDAO, BookDAO, GenreDAO, AuthorDAO, Librar
             e.printStackTrace();
         }
         return bookList;
+    }
+
+    @Override
+    public int transfer(Library library1, Library library2, Book book) {
+        return 0;
     }
 }

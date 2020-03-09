@@ -1,6 +1,7 @@
 package com.john.librarydb.api;
 
 import com.john.librarydb.model.Book;
+import com.john.librarydb.model.Transaction;
 import com.john.librarydb.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +44,18 @@ public class BookController {
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable("id")UUID id) {
         bookService.deleteBookById(id);
+    }
+
+    @PostMapping
+    public void transferBook(@Valid @NotNull @RequestBody Transaction transaction) {
+        if(transaction.getRequest() == Transaction.Request.RETURN) {
+            bookService.returnBook(transaction.getLibrary1(), transaction.getBook());
+        }
+        else if(transaction.getRequest() == Transaction.Request.CHECKOUT){
+            bookService.checkOutBook(transaction.getLibrary1(), transaction.getBook());
+        }
+        else {
+            bookService.transfer(transaction.getLibrary1(), transaction.getLibrary2(), transaction.getBook());
+        }
     }
 }
